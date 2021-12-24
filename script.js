@@ -1,11 +1,20 @@
 const container = document.querySelector("#container");
 container.classList.add("container");
 const inputField = document.createElement("input");
-container.appendChild(inputField);
 const weatherImg = document.createElement("img");
-container.appendChild(weatherImg);
+const goBtn = document.createElement("button");
+goBtn.textContent = "GO!";
+const weatherTxt = document.createElement("p");
+const tempTxt = document.createElement("p");
+container.append(inputField, goBtn, weatherImg, weatherTxt, tempTxt);
 
-// function that shows gif according to weather!
+const elementos = Array.from(container.childNodes);
+elementos.forEach((elemento) => elemento.classList.add("element"));
+
+goBtn.addEventListener("click", printResults);
+
+//
+// function that gives gif URL according to weather!
 async function getGifData(weather) {
   try {
     const rawData = await fetch(
@@ -21,7 +30,7 @@ async function getGifData(weather) {
 }
 
 // function retrieves API data, returns only what we want
-async function getWeatherData(city) {
+async function getWeatherCity(city) {
   try {
     const rawData = await fetch(
       " https://api.openweathermap.org/data/2.5/weather?q=" +
@@ -43,15 +52,16 @@ async function getWeatherData(city) {
 // print the data to displaying elements
 async function printResults() {
   try {
-    const cityData = await getWeatherData(inputField.value);
+    const cityData = await getWeatherCity(inputField.value);
     console.log(cityData.weather);
     const imgSrc = await getGifData(cityData.weather);
     console.log(cityData.temp);
     weatherImg.src = imgSrc;
+    weatherTxt.textContent = cityData.weather;
+    tempTxt.textContent = cityData.temp + " degrees";
   } catch (e) {
     console.log(e);
   }
 }
 
-// API Logic - key: a7bae7872f54eb3f2103e25c1bfd7043
 // different API to test https://api.giphy.com/v1/gifs/translate?api_key=K36V190uiXKNdVWSvQPos2LEqYbGJUXs&s="
